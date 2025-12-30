@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data.js";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -16,6 +17,9 @@ const Login = () => {
     role: "",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -27,6 +31,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
@@ -40,6 +45,8 @@ const Login = () => {
         ? error.response.data.message
         : "An unexpected error occurred.";
       toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -102,10 +109,17 @@ const Login = () => {
               </div>
             </RadioGroup>
           </div>
-
-          <button className="w-3/4 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800/90 rounded-md">
-            Login
-          </button>
+          {loading ? (
+            <div className="flex items-center justify-center my-10">
+              <div className="spinner-border text-blue-600" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button className="w-3/4 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800/90 rounded-md">
+              Login
+            </button>
+          )}
 
           <div className=" ">
             <p className="text-gray-700  text-center my-2">
