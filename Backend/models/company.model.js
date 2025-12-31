@@ -7,7 +7,7 @@ const companySchema = new mongoose.Schema(
         required: true,
     },description: {
         type: String,
-        required: true,
+        // required: true,
     },
     website:{
         type: String,

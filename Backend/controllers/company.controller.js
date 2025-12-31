@@ -22,6 +22,7 @@ export const registerCompany = async (req, res) => {
     return res.status(200).json({
       message: `Company ${company.companyName} registered successfully`,
       success: true,
+      company,
     });
   } catch (error) {
     console.error("Error in registerCompany controller:", error);
