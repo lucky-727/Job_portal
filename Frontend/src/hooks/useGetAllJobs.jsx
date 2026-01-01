@@ -3,6 +3,7 @@ import { JOB_API_ENDPOINT } from "@/utils/data";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 const useGetAllJobs = () => {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ const useGetAllJobs = () => {
         }
       } catch (error) {
         console.error("Fetch Error:", error);
+        toast.error(error.response?.data?.message || "An error occurred.");
         setError(error.message || "An error occurred.");
       } finally {
         setLoading(false);

@@ -1,5 +1,4 @@
- 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,12 +14,29 @@ import { Edit2, MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const CompaniesTable = () => {
-  const { companies } = useSelector((store) => store.company);
-  console.log("COMPANIES",companies);
+  const { companies, searchCompanyByText } = useSelector(
+    (store) => store.company
+  );
+  const [filterCompany, setFilterCompany] = useState(companies);
+
+  useEffect(() => {
+    const filteredCompany =
+      companies.length >= 0 &&
+      companies.filter((company) => {
+        if (!searchCompanyByText) {
+          return true;
+        }
+        return company.companyName
+          ?.toLowerCase()
+          .includes(searchCompanyByText.toLowerCase());
+      });
+    setFilterCompany(filteredCompany);
+  }, [companies, searchCompanyByText]);
+
+  console.log("COMPANIES", companies);
   if (!companies) {
     return <div>Loading...</div>;
   }
-  
 
   return (
     <div>
@@ -36,10 +52,10 @@ const CompaniesTable = () => {
         </TableHeader>
 
         <TableBody>
-          {companies.length === 0 ? (
+          {filterCompany.length === 0 ? (
             <span>No Companies Added</span>
           ) : (
-            companies?.map((company) => (
+            filterCompany?.map((company) => (
               <TableRow key={company.id}>
                 <TableCell>
                   <Avatar>
