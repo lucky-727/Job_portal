@@ -4,7 +4,7 @@ import Register from "./components/authentication/Register";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./components/components_lite/Home";
 import PrivacyPolicy from "./components/components_lite/PrivacyPolicy.jsx";
-import TermsofService from "./components/components_lite/TermsofService.jsx";
+import TermsOfService from "./components/components_lite/TermsOfService.jsx";
 import Jobs from "./components/components_lite/Jobs.jsx";
 import Browse from "./components/components_lite/Browse.jsx";
 import Profile from "./components/components_lite/Profile.jsx";
@@ -40,8 +40,8 @@ const appRouter = createBrowserRouter([
     element: <PrivacyPolicy />,
   },
   {
-    path: "/TermsofService",
-    element: <TermsofService />,
+    path: "/TermsOfService",
+    element: <TermsOfService />,
   },
   {
     path: "/Jobs",

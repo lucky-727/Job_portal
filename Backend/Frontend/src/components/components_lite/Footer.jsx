@@ -20,7 +20,7 @@ const Footer = () => {
         </p>
         <p>
           <Link to={"/PrivacyPolicy"}>Privacy Policy </Link> |
-          <Link to={"/TermsofService"}> Terms of Service</Link>
+          <Link to={"/TermsOfService"}> Terms of Service</Link>
         </p>
       </div>
     </div>
