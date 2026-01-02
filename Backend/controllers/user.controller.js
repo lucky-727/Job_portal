@@ -15,16 +15,19 @@ export const register = async (req, res) => {
         .json({ message: "All fields are required", success: false });
     }
 
-    const file= req.file;
+    const file = req.file;
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     //check if user already exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      $or: [{ email }, { phoneNumber }],
+    });
+    console.log(user, "tessst");
     if (user) {
       return res
         .status(400)
-        .json({ message: "User already exists", success: false });
+        .json({ message: "User already exist. Email and Phone Number must be unique", success: false });
     }
     //convert password to hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,7 +40,7 @@ export const register = async (req, res) => {
       role,
       profile: {
         profilePhoto: cloudResponse.secure_url,
-      }
+      },
     });
 
     await newUser.save();
@@ -128,11 +131,10 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullname, phoneNumber, email, bio, skills } = req.body;
     const file = req.file; // resume file
-    
-    console.log("Authenticated userId:", req.userId,req.body, req.file);
+
+    console.log("Authenticated userId:", req.userId, req.body, req.file);
     //cloudinary upload logic here
 
-     
     //Initialize userId at beginning
     const userId = req.userId; // middleware authentication se set hua hai
 
@@ -172,12 +174,11 @@ export const updateProfile = async (req, res) => {
       const cloudResponse = await cloudinary.uploader.upload(
         fileUri.content,
         { resource_type: "raw" } // IMPORTANT for PDF
-      )
+      );
       //resume
       user.profile.resume = cloudResponse.secure_url;
       user.profile.resumeOriginalName = file.originalname;
     }
-
 
     //save updated user
     await user.save();
@@ -195,11 +196,9 @@ export const updateProfile = async (req, res) => {
       .json({ message: "Profile updated successfully", success: true, user });
   } catch (error) {
     console.error("Error in updateProfile controller:", error);
-    return res
-      .status(500)
-      .json({
-        message: "Internal server error in updateProfile",
-        success: false,
-      });
+    return res.status(500).json({
+      message: "Internal server error in updateProfile",
+      success: false,
+    });
   }
 };
