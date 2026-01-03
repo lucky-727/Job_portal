@@ -4,13 +4,13 @@ import getDataUri from "../utils/datauri.js";
 
 export const registerCompany = async (req, res) => {
   try {
-    const { companyName ,description} = req.body;
+    const { companyName, description } = req.body;
     if (!companyName) {
       return res
         .status(400)
         .json({ message: "Company name is required", success: false });
     }
-    let company = await Company.findOne({ companyName});
+    let company = await Company.findOne({ companyName });
     if (company) {
       return res
         .status(400)
@@ -93,17 +93,35 @@ export const getCompanyById = async (req, res) => {
 //update company details
 export const updateCompany = async (req, res) => {
   try {
-    const { companyName , description, website, location } = req.body;
+    const { companyName, description, website, location } = req.body;
     const file = req.file; // logo file
     //cloudinary upload logic here
 
-     const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-    const logo = cloudResponse.secure_url;
+    let logo;
+    if (file) {
+      try {
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+          folder: 'company-logos',
+          transformation: [
+            { width: 500, height: 500, crop: 'limit' },
+            { quality: 'auto' },
+            { fetch_format: 'auto' }
+          ]
+        });
+        logo = cloudResponse.secure_url;
+      } catch (uploadError) {
+        console.error('Cloudinary upload failed:', uploadError);
+        return res.status(500).json({
+          message: 'Failed to upload logo',
+          success: false
+        });
+      }
+    }
 
     const updateData = { companyName, description, website, location, logo };
 
-    const company = await Company.findByIdAndUpdate(req.params.id, updateData,{new: true,});
+    const company = await Company.findByIdAndUpdate(req.params.id, updateData, { new: true, });
     if (!company) {
       return res
         .status(404)
