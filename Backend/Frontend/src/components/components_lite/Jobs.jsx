@@ -54,6 +54,7 @@ const Jobs = () => {
                     exit={{ opacity: 0, x: -100 }}
                     transition={{ duration: 0.4 }}
                     key={job.id}
+                    className="h-full"
                   >
                     {" "}
                     <Job1 job={job} />

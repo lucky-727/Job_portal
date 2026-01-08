@@ -22,12 +22,19 @@ const persistConfig = {
   storage,
 };
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   auth: authReducer,
   job: jobReducer,
   company: companyReducer,
   application: applicationSlice,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === "auth/setUser" && action.payload === null) {
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -42,5 +49,5 @@ const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-persistor.purge(); // 🔥 clears old redux data
+// persistor.purge(); // 🔥 clears old redux data
 export default store;

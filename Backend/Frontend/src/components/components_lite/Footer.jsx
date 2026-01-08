@@ -14,7 +14,7 @@ const Footer = () => {
           backgroundColor: "#f1f1f1",
         }}
       >
-        <p>© {date} Sunfire Sensei. All rights reserved.</p>
+        <p>© {date} Job Portal. All rights reserved.</p>
         <p>
           Powered by <Link to={"https://github.com/lucky-727"}>Tarun garg</Link>
         </p>
